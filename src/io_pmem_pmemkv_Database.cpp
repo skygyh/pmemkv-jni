@@ -34,6 +34,7 @@
 #include <string>
 #include <jni.h>
 #include <libpmemkv.h>
+#include <libpmemkv.hpp>
 #include <libpmemkv_json_config.h>
 #include <iostream>
 
@@ -41,6 +42,12 @@
 #define LOG(msg) if (DO_LOG) std::cout << "[pmemkv-jni] " << msg << "\n"
 
 #define EXCEPTION_CLASS "io/pmem/pmemkv/DatabaseException"
+
+#if __cpp_lib_string_view
+using string_view_t = std::string_view;
+#else
+using string_view_t = pmem::kv::string_view;
+#endif
 
 extern "C" JNIEXPORT jlong JNICALL Java_io_pmem_pmemkv_Database_database_1start
         (JNIEnv* env, jobject obj, jstring engine, jstring config) {
@@ -707,4 +714,113 @@ extern "C" JNIEXPORT jboolean JNICALL Java_io_pmem_pmemkv_Database_database_1rem
     if (result != PMEMKV_STATUS_OK && result != PMEMKV_STATUS_NOT_FOUND)
         env->ThrowNew(env->FindClass(EXCEPTION_CLASS), "pmemkv_remove() failed");
     return result == PMEMKV_STATUS_OK;
+}
+
+extern "C" JNIEXPORT jlong JNICALL Java_io_pmem_pmemkv_Database_database_1iterator_1new
+(JNIEnv * env, jobject obj, jlong pointer) {
+	auto engine = (pmemkv_db*) pointer;
+	pmemkv_iterator* it = pmemkv_begin(engine);
+	if (it == nullptr)
+		env->ThrowNew(env->FindClass(EXCEPTION_CLASS), "pmemkv_begin() failed");
+
+	return (jlong)it;
+}
+
+extern "C" JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1iterator_1next
+(JNIEnv * env, jobject obj, jlong pointer, jlong iterator_pointer) {
+	pmemkv_iterator* _it = (pmemkv_iterator*)iterator_pointer;
+	pmem::kv::kv_iterator * it = reinterpret_cast<pmem::kv::kv_iterator*>(_it);
+	++(*it);
+}
+
+extern "C" JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1iterator_1prev
+(JNIEnv * env, jobject obj, jlong pointer, jlong iterator_pointer) {
+	pmemkv_iterator* _it = (pmemkv_iterator*)iterator_pointer;
+	pmem::kv::kv_iterator * it = reinterpret_cast<pmem::kv::kv_iterator*>(_it);
+	--(*it);
+}
+
+extern "C" JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1iterator_1seek_1to_1first
+(JNIEnv * env, jobject obj, jlong pointer, jlong iterator_pointer) {
+	pmemkv_iterator* _it = (pmemkv_iterator*)iterator_pointer;
+	pmem::kv::kv_iterator * it = reinterpret_cast<pmem::kv::kv_iterator*>(_it);
+	it->seek_to_first();
+}
+
+extern "C" JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1iterator_1seek_1to_1last
+(JNIEnv * env, jobject obj, jlong pointer, jlong iterator_pointer) {
+	pmemkv_iterator* _it = (pmemkv_iterator*)iterator_pointer;
+	pmem::kv::kv_iterator * it = reinterpret_cast<pmem::kv::kv_iterator*>(_it);
+	it->seek_to_last();
+}
+
+extern "C" JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1iterator_1seek
+(JNIEnv * env, jobject obj, jlong pointer, jlong iterator_pointer, jbyteArray key) {
+	pmemkv_iterator* _it = (pmemkv_iterator*)iterator_pointer;
+	pmem::kv::kv_iterator * it = reinterpret_cast<pmem::kv::kv_iterator*>(_it);
+	const auto ckey = env->GetByteArrayElements(key, NULL);
+	const auto ckeybytes = env->GetArrayLength(key);
+	string_view_t target((char*) ckey, ckeybytes);
+	it->seek(target);
+	env->ReleaseByteArrayElements(key, ckey, JNI_ABORT);
+}
+
+extern "C" JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1iterator_1seek_1for_1prev
+(JNIEnv * env, jobject obj, jlong pointer, jlong iterator_pointer, jbyteArray key) {
+	pmemkv_iterator* _it = (pmemkv_iterator*)iterator_pointer;
+	pmem::kv::kv_iterator * it = reinterpret_cast<pmem::kv::kv_iterator*>(_it);
+	const auto ckey = env->GetByteArrayElements(key, NULL);
+	const auto ckeybytes = env->GetArrayLength(key);
+	string_view_t target((char*)ckey, ckeybytes);
+	it->seek_for_prev(target);
+	env->ReleaseByteArrayElements(key, ckey, JNI_ABORT);
+}
+
+extern "C" JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1iterator_1seek_1for_1next
+(JNIEnv * env, jobject obj, jlong pointer, jlong iterator_pointer, jbyteArray key) {
+	pmemkv_iterator* _it = (pmemkv_iterator*)iterator_pointer;
+	pmem::kv::kv_iterator * it = reinterpret_cast<pmem::kv::kv_iterator*>(_it);
+	const auto ckey = env->GetByteArrayElements(key, NULL);
+	const auto ckeybytes = env->GetArrayLength(key);
+	string_view_t target((char*)ckey, ckeybytes);
+	it->seek_for_next(target);
+	env->ReleaseByteArrayElements(key, ckey, JNI_ABORT);
+}
+
+extern "C" JNIEXPORT jboolean JNICALL Java_io_pmem_pmemkv_Database_database_1iterator_1is_1valid
+(JNIEnv * env, jobject obj, jlong pointer, jlong iterator_pointer, jbyteArray key) {
+	pmemkv_iterator* _it = (pmemkv_iterator*)iterator_pointer;
+	pmem::kv::kv_iterator * it = reinterpret_cast<pmem::kv::kv_iterator*>(_it);
+	return it->valid();
+}
+
+extern "C" JNIEXPORT jbyteArray JNICALL Java_io_pmem_pmemkv_Database_database_1iterator_1key_1bytes
+(JNIEnv * env, jobject obj, jlong pointer, jlong iterator_pointer) {
+	pmemkv_iterator* _it = (pmemkv_iterator*)iterator_pointer;
+	pmem::kv::kv_iterator * it = reinterpret_cast<pmem::kv::kv_iterator*>(_it);
+	string_view_t k = it->key();
+	size_t len = k.size();
+	jbyteArray result = env->NewByteArray(len);
+	env->SetByteArrayRegion(result, 0, len, (jbyte*)(k.data()));
+	return result;
+}
+
+extern "C" JNIEXPORT jbyteArray JNICALL Java_io_pmem_pmemkv_Database_database_1iterator_1value_1bytes
+(JNIEnv * env, jobject obj, jlong pointer, jlong iterator_pointer) {
+	pmemkv_iterator* _it = (pmemkv_iterator*)iterator_pointer;
+	pmem::kv::kv_iterator * it = reinterpret_cast<pmem::kv::kv_iterator*>(_it);
+	string_view_t v = it->value();
+	size_t len = v.size();
+	jbyteArray result = env->NewByteArray(len);
+	env->SetByteArrayRegion(result, 0, len, (jbyte*)(v.data()));
+	return result;
+}
+
+extern "C" JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1iterator_1delete
+(JNIEnv * env, jobject obj, jlong pointer, jlong iterator_pointer) {
+	pmemkv_iterator* _it = (pmemkv_iterator*)iterator_pointer;
+	pmem::kv::kv_iterator * it = reinterpret_cast<pmem::kv::kv_iterator*>(_it);
+	if (it != nullptr) {
+		delete it;
+	}
 }
