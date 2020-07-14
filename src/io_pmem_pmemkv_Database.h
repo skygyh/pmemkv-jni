@@ -559,6 +559,22 @@ JNIEXPORT jbyteArray JNICALL Java_io_pmem_pmemkv_Database_database_1iterator_1va
 JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1iterator_1delete
   (JNIEnv *, jobject, jlong, jlong);
 
+/*
+ * Class:     io_pmem_pmemkv_Database
+ * Method:    database_get_floor_entry_bytes
+ * Signature: (J[BLio/pmem/pmemkv/GetAllByteArrayCallback;)V
+ */
+JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1get_1floor_1entry_1bytes
+  (JNIEnv *, jobject, jlong, jbyteArray, jobject);
+
+/*
+ * Class:     io_pmem_pmemkv_Database
+ * Method:    database_get_ceiling_entry_bytes
+ * Signature: (J[BLio/pmem/pmemkv/GetAllByteArrayCallback;)V
+ */
+JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1get_1ceiling_1entry_1bytes
+  (JNIEnv *, jobject, jlong, jbyteArray, jobject);  
+
 #ifdef __cplusplus
 }
 #endif

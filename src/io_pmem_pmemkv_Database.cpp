@@ -1183,3 +1183,35 @@ extern "C" JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1iterato
 		delete it;
 	}
 }
+
+extern "C" JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1get_1floor_1entry_1bytes
+  (JNIEnv *, jobject, jlong, jbyteArray, jobject) {
+    auto engine = (pmemkv_db*) pointer;
+    const auto ckey = env->GetByteArrayElements(key, NULL);
+    const auto ckeybytes = env->GetArrayLength(key);
+    const auto cls = env->GetObjectClass(callback);
+    const auto mid = env->GetMethodID(cls, "process", METHOD_GET_KEYS_BYTEARRAY);
+    Context cxt = CONTEXT;
+    auto status = pmemkv_get_floor_entry(engine, (char*) ckey, ckeybytes, CALLBACK_GET_KEYS_BYTEARRAY, &cxt);
+    env->ReleaseByteArrayElements(key, ckey, JNI_ABORT);
+    if (status != PMEMKV_STATUS_OK) { 
+            snprintf(buffer, sizeof(buffer), "Failed to pmemkv_get_floor_entry with status %s\n", decode(status));
+            env->ThrowNew(env->FindClass(EXCEPTION_CLASS), buffer); 
+    }
+  }
+
+extern "C" JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1get_1ceiling_1entry_1bytes
+  (JNIEnv *, jobject, jlong, jbyteArray, jobject){
+    auto engine = (pmemkv_db*) pointer;
+    const auto ckey = env->GetByteArrayElements(key, NULL);
+    const auto ckeybytes = env->GetArrayLength(key);
+    const auto cls = env->GetObjectClass(callback);
+    const auto mid = env->GetMethodID(cls, "process", METHOD_GET_KEYS_BYTEARRAY);
+    Context cxt = CONTEXT;
+    auto status = pmemkv_get_ceiling_entry(engine, (char*) ckey, ckeybytes, CALLBACK_GET_KEYS_BYTEARRAY, &cxt);
+    env->ReleaseByteArrayElements(key, ckey, JNI_ABORT);
+    if (status != PMEMKV_STATUS_OK) { 
+            snprintf(buffer, sizeof(buffer), "Failed to pmemkv_get_ceiling_entry with status %s\n", decode(status));
+            env->ThrowNew(env->FindClass(EXCEPTION_CLASS), buffer); 
+    }
+  }
