@@ -569,11 +569,27 @@ JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1get_1floor_1entry_
 
 /*
  * Class:     io_pmem_pmemkv_Database
+ * Method:    database_get_floor_entry_string
+ * Signature: (J[BLio/pmem/pmemkv/GetAllStringCallback;)V
+ */
+JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1get_1floor_1entry_1string
+  (JNIEnv *, jobject, jlong, jbyteArray, jobject);
+
+/*
+ * Class:     io_pmem_pmemkv_Database
  * Method:    database_get_ceiling_entry_bytes
  * Signature: (J[BLio/pmem/pmemkv/GetAllByteArrayCallback;)V
  */
 JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1get_1ceiling_1entry_1bytes
-  (JNIEnv *, jobject, jlong, jbyteArray, jobject);  
+  (JNIEnv *, jobject, jlong, jbyteArray, jobject);
+
+/*
+ * Class:     io_pmem_pmemkv_Database
+ * Method:    database_get_ceiling_entry_string
+ * Signature: (J[BLio/pmem/pmemkv/GetAllStringCallback;)V
+ */
+JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1get_1ceiling_1entry_1string
+  (JNIEnv *, jobject, jlong, jbyteArray, jobject);
 
 #ifdef __cplusplus
 }
