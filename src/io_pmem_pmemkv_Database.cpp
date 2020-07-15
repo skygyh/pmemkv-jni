@@ -1190,9 +1190,9 @@ extern "C" JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1get_1fl
     const auto ckey = env->GetByteArrayElements(key, NULL);
     const auto ckeybytes = env->GetArrayLength(key);
     const auto cls = env->GetObjectClass(callback);
-    const auto mid = env->GetMethodID(cls, "process", METHOD_GET_KEYS_BYTEARRAY);
+    const auto mid = env->GetMethodID(cls, "process", METHOD_GET_ALL_BYTEARRAY);
     Context cxt = CONTEXT;
-    auto status = pmemkv_get_floor_entry(engine, (char*) ckey, ckeybytes, CALLBACK_GET_KEYS_BYTEARRAY, &cxt);
+    auto status = pmemkv_get_floor_entry(engine, (char*) ckey, ckeybytes, CALLBACK_GET_ALL_BYTEARRAY, &cxt);
     env->ReleaseByteArrayElements(key, ckey, JNI_ABORT);
     if (status != PMEMKV_STATUS_OK) { 
             snprintf(buffer, sizeof(buffer), "Failed to pmemkv_get_floor_entry with status %s\n", decode(status));
@@ -1224,9 +1224,9 @@ extern "C" JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1get_1ce
     const auto ckey = env->GetByteArrayElements(key, NULL);
     const auto ckeybytes = env->GetArrayLength(key);
     const auto cls = env->GetObjectClass(callback);
-    const auto mid = env->GetMethodID(cls, "process", METHOD_GET_KEYS_BYTEARRAY);
+    const auto mid = env->GetMethodID(cls, "process", METHOD_GET_ALL_BYTEARRAY);
     Context cxt = CONTEXT;
-    auto status = pmemkv_get_ceiling_entry(engine, (char*) ckey, ckeybytes, CALLBACK_GET_KEYS_BYTEARRAY, &cxt);
+    auto status = pmemkv_get_ceiling_entry(engine, (char*) ckey, ckeybytes, CALLBACK_GET_ALL_BYTEARRAY, &cxt);
     env->ReleaseByteArrayElements(key, ckey, JNI_ABORT);
     if (status != PMEMKV_STATUS_OK) { 
             snprintf(buffer, sizeof(buffer), "Failed to pmemkv_get_ceiling_entry with status %s\n", decode(status));
