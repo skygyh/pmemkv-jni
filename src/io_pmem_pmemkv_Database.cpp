@@ -1185,7 +1185,7 @@ extern "C" JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1iterato
 }
 
 extern "C" JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1get_1floor_1entry_1bytes
-  (JNIEnv *, jobject, jlong, jbyteArray, jobject) {
+(JNIEnv* env, jobject obj, jlong pointer, jbyteArray key, jobject callback) {
     auto engine = (pmemkv_db*) pointer;
     const auto ckey = env->GetByteArrayElements(key, NULL);
     const auto ckeybytes = env->GetArrayLength(key);
@@ -1201,7 +1201,7 @@ extern "C" JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1get_1fl
   }
 
 extern "C" JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1get_1ceiling_1entry_1bytes
-  (JNIEnv *, jobject, jlong, jbyteArray, jobject){
+(JNIEnv* env, jobject obj, jlong pointer, jbyteArray key, jobject callback) {
     auto engine = (pmemkv_db*) pointer;
     const auto ckey = env->GetByteArrayElements(key, NULL);
     const auto ckeybytes = env->GetArrayLength(key);
