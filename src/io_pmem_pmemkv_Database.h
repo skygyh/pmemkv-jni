@@ -562,33 +562,65 @@ JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1iterator_1delete
 /*
  * Class:     io_pmem_pmemkv_Database
  * Method:    database_get_floor_entry_bytes
- * Signature: (J[BLio/pmem/pmemkv/GetAllByteArrayCallback;)V
+ * Signature: (J[BLio/pmem/pmemkv/GetAllByteArrayCallback;)Z
  */
-JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1get_1floor_1entry_1bytes
+JNIEXPORT jboolean JNICALL Java_io_pmem_pmemkv_Database_database_1get_1floor_1entry_1bytes
   (JNIEnv *, jobject, jlong, jbyteArray, jobject);
 
 /*
  * Class:     io_pmem_pmemkv_Database
  * Method:    database_get_floor_entry_string
- * Signature: (J[BLio/pmem/pmemkv/GetAllStringCallback;)V
+ * Signature: (J[BLio/pmem/pmemkv/GetAllStringCallback;)Z
  */
-JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1get_1floor_1entry_1string
+JNIEXPORT jboolean JNICALL Java_io_pmem_pmemkv_Database_database_1get_1floor_1entry_1string
   (JNIEnv *, jobject, jlong, jbyteArray, jobject);
 
 /*
  * Class:     io_pmem_pmemkv_Database
  * Method:    database_get_ceiling_entry_bytes
- * Signature: (J[BLio/pmem/pmemkv/GetAllByteArrayCallback;)V
+ * Signature: (J[BLio/pmem/pmemkv/GetAllByteArrayCallback;)Z
  */
-JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1get_1ceiling_1entry_1bytes
+JNIEXPORT jboolean JNICALL Java_io_pmem_pmemkv_Database_database_1get_1ceiling_1entry_1bytes
   (JNIEnv *, jobject, jlong, jbyteArray, jobject);
 
 /*
  * Class:     io_pmem_pmemkv_Database
  * Method:    database_get_ceiling_entry_string
- * Signature: (J[BLio/pmem/pmemkv/GetAllStringCallback;)V
+ * Signature: (J[BLio/pmem/pmemkv/GetAllStringCallback;)Z
  */
-JNIEXPORT void JNICALL Java_io_pmem_pmemkv_Database_database_1get_1ceiling_1entry_1string
+JNIEXPORT jboolean JNICALL Java_io_pmem_pmemkv_Database_database_1get_1ceiling_1entry_1string
+  (JNIEnv *, jobject, jlong, jbyteArray, jobject);
+
+/*
+ * Class:     io_pmem_pmemkv_Database
+ * Method:    database_get_lower_entry_bytes
+ * Signature: (J[BLio/pmem/pmemkv/GetAllByteArrayCallback;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_io_pmem_pmemkv_Database_database_1get_1lower_1entry_1bytes
+  (JNIEnv *, jobject, jlong, jbyteArray, jobject);
+
+/*
+ * Class:     io_pmem_pmemkv_Database
+ * Method:    database_get_lower_entry_string
+ * Signature: (J[BLio/pmem/pmemkv/GetAllStringCallback;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_io_pmem_pmemkv_Database_database_1get_1lower_1entry_1string
+  (JNIEnv *, jobject, jlong, jbyteArray, jobject);
+
+/*
+ * Class:     io_pmem_pmemkv_Database
+ * Method:    database_get_higher_entry_bytes
+ * Signature: (J[BLio/pmem/pmemkv/GetAllByteArrayCallback;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_io_pmem_pmemkv_Database_database_1get_1higher_1entry_1bytes
+  (JNIEnv *, jobject, jlong, jbyteArray, jobject);
+
+/*
+ * Class:     io_pmem_pmemkv_Database
+ * Method:    database_get_higher_entry_string
+ * Signature: (J[BLio/pmem/pmemkv/GetAllStringCallback;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_io_pmem_pmemkv_Database_database_1get_1higher_1entry_1string
   (JNIEnv *, jobject, jlong, jbyteArray, jobject);
 
 #ifdef __cplusplus
